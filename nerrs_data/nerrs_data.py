@@ -5,13 +5,33 @@ import os
 import requests
 from suds.client import Client
 
+from suds.xsd.doctor import Import, ImportDoctor
+
 
 def getData(station_code, param_name):
     """
     fetch met data based on docs from https://cdmo.baruch.sc.edu/webservices.cfm
     """
+    target_namespace = 'http://xml.apache.org/xml-soap'
+    # use the import doctor to check the wsdl
+    schema_import = Import('http://schemas.xmlsoap.org/soap/encoding/', location='http://schemas.xmlsoap.org/soap/encoding/')
+    schema_import.filter.add(target_namespace)
 
-    soapClient = Client("http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl", timeout=90, retxml=True)
+    # Create a Doctor instance with the import
+    doctor = ImportDoctor(schema_import)
+
+    # Initialize the client with the Doctor
+    soapClient = Client(
+        "http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl",
+        timeout=90,
+        retxml=False,
+        doctor=doctor
+    )
+
+
+
+
+    soapClient = Client("http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl", timeout=90, retxml=False)
 
     # Get the station codes SOAP request example.
     param_data = soapClient.service.exportSingleParamXML(
