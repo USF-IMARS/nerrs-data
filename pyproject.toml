@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "nerrs-data"
-version = "0.1.0"
+version = "0.2.0"
 homepage = "https://github.com/7yl4r/nerrs-data"
 description = "Data access for NERRS CDMO data.."
 authors = ["Tylar Murray <email@tylar.info>"]
