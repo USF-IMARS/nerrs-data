@@ -35,12 +35,17 @@ def getData(station_code, param_name):
 
     # Convert the extracted data into a pandas DataFrame
     df = pd.DataFrame(data_rows, columns=['DateTimeStamp', 'Sal'])
-    
+
+    # === datetime qc
     # Convert the 'date' column to datetime format
     df['DateTimeStamp'] = pd.to_datetime(df['DateTimeStamp'], format='%m/%d/%Y %H:%M')
-    
+
     # Convert to RFC3339 format
     df['DateTimeStamp'] = df['DateTimeStamp'].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    # === value qc
+    # ensure value is float
+    df['Sal']= df['Sal'].astype(float)
     
     return df
 
