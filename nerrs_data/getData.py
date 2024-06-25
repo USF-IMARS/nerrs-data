@@ -6,7 +6,7 @@ import pandas as pd
 from suds.client import Client
 
 
-def getData(station_code, param_name):
+def getData(station_code, param_name, n_records=100):
     """
     fetch met data based on docs from https://cdmo.baruch.sc.edu/webservices.cfm
     """
@@ -15,7 +15,7 @@ def getData(station_code, param_name):
     # Get the station codes SOAP request example.
     data_xml = soapClient.service.exportSingleParamXML(
         station_code,  # Station_Code
-        25,  # Number of records to retrieve TODO: make this inf?
+        n_records,  # Number of records to retrieve TODO: make this inf?
         param_name,  # parameter
     )
     data_tree = ET.fromstring(data_xml)
