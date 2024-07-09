@@ -39,3 +39,24 @@ def exportStationCodes():
     df = pd.DataFrame(data_rows[1:], columns=data_rows[0])
 
     return df
+
+def exportStationCodesDictFor(nerr_site_id):
+    df = exportStationCodes()
+    df = df.drop(columns=['Lat_Long', 'latitude', 'longitude'])
+    # view uniques like:
+    # df['state'].unique()
+
+    # === subset however you want:
+    # df = df[df['reserve_name'] == 'Sapelo Island']
+    # or
+    # df = df[df['state'] == 'ga']
+    # or
+    df = df[df['NERR_SITE_ID'] == nerr_site_id]
+
+    # === build the dict for the selection
+    for station_type in ['nut', 'met', 'wq']:
+        df_subset = df[df['Station_Code'].str.endswith(station_type)]
+        params_dict = {
+            row['Station_Code']: row['params_reported'].split(',') for index, row in df_subset.iterrows()
+        }
+        print('\n', station_type, ' = ', params_dict)
