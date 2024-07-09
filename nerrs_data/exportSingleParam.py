@@ -19,22 +19,20 @@ def exportSingleParam(station_code, param_name, n_records=100):
         param_name,  # parameter
     )
     data_tree = ET.fromstring(data_xml)
-    print("data:\n", data_xml.decode().replace("\t", "").replace("\n", "").replace(" ", ""))
-    print(data_tree.tag)
+    #print("data:\n", data_xml.decode().replace("\t", "").replace("\n", "").replace(" ", ""))
 
     # === extract the rows from the xml
     data_rows = []
     # Iterate through each row ('r' tag) and extract the 'cv' attribute values
     for row in data_tree.iter(tag='r'):
         data_row = [col.attrib['v'] for col in row.iter(tag='c')]
-        # Append if data row contains exactly two elements (date and value)
-        if len(data_row) == 2:
-            data_rows.append(data_row)
+        #print(data_row)
+        data_rows.append(data_row)
 
-    data_rows = data_rows[1:]  # rm duplicated header row
+#    data_rows = data_rows[1:]  # rm duplicated header row
 
     # Convert the extracted data into a pandas DataFrame
-    df = pd.DataFrame(data_rows, columns=['DateTimeStamp', 'Sal'])
+    df = pd.DataFrame(data_rows[1:], columns=data_rows[0])
 
     # === datetime qc
     # Convert the 'date' column to datetime format
@@ -45,7 +43,7 @@ def exportSingleParam(station_code, param_name, n_records=100):
 
     # === value qc
     # ensure value is float
-    df['Sal']= df['Sal'].astype(float)
+    df[param_name]= df[param_name].astype(float)
     
     return df
 
