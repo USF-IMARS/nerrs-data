@@ -27,36 +27,15 @@ def exportStationCodes():
     # Get the station codes SOAP request example.
     data_xml = soapClient.service.exportStationCodesXML()
     data_tree = ET.fromstring(data_xml)
-    print("data:\n", data_xml.decode().replace("\t", "").replace("\n", "").replace(" ", ""))
-    print(data_tree.tag)
 
     # === extract the rows from the xml
     data_rows = []
     # Iterate through each row ('r' tag) and extract the 'cv' attribute values
     for row in data_tree.iter(tag='r'):
         data_row = [col.attrib['v'] for col in row.iter(tag='c')]
-        # Append if data row contains exactly two elements (date and value)
-        if len(data_row) == 2:
-            data_rows.append(data_row)
-
-    data_rows = data_rows[1:]  # rm duplicated header row
+        data_rows.append(data_row)
 
     # Convert the extracted data into a pandas DataFrame
-    df = pd.DataFrame(data_rows, columns=['DateTimeStamp', 'Sal'])
+    df = pd.DataFrame(data_rows[1:], columns=data_rows[0])
 
-    # === datetime qc
-    # Convert the 'date' column to datetime format
-    df['DateTimeStamp'] = pd.to_datetime(df['DateTimeStamp'], format='%m/%d/%Y %H:%M')
-
-    # Convert to RFC3339 format
-    df['DateTimeStamp'] = df['DateTimeStamp'].dt.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-    # === value qc
-    # ensure value is float
-    df['Sal']= df['Sal'].astype(float)
-    
     return df
-
-
-# test
-# getData("acespwq", "Sal")
