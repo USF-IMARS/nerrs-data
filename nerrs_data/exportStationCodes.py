@@ -6,18 +6,26 @@ import pandas as pd
 from suds.client import Client
 
 
-def getData(station_code, param_name, n_records=100):
+def exportStationCodes():
     """
-    fetch met data based on docs from https://cdmo.baruch.sc.edu/webservices.cfm
+    https://cdmo.baruch.sc.edu/webservices.cfm
+
+    exportStationCodesXML
+
+    Returns the following XML data:
+      NERR_Site_ID, Station_Code, Station_Name,
+      Latitude/Longitude (in degrees), Latitude (in decimal), Longitude (in decimal),
+      Active Status, Active Dates,
+      State, Reserve_Name,
+      the parameters reported for all stations, and a Real Time bit.
+
+    Arguments
+      None
     """
     soapClient = Client("http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl", timeout=90, retxml=True)
 
     # Get the station codes SOAP request example.
-    data_xml = soapClient.service.exportSingleParamXML(
-        station_code,  # Station_Code
-        n_records,  # Number of records to retrieve TODO: make this inf?
-        param_name,  # parameter
-    )
+    data_xml = soapClient.service.exportStationCodesXML()
     data_tree = ET.fromstring(data_xml)
     print("data:\n", data_xml.decode().replace("\t", "").replace("\n", "").replace(" ", ""))
     print(data_tree.tag)
