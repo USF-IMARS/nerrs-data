@@ -47,6 +47,3 @@ def exportSingleParam(station_code, param_name, n_records=100):
     
     return df
 
-
-# test
-# getData("acespwq", "Sal")
