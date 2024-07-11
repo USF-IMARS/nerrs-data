@@ -61,6 +61,7 @@ def exportStationCodesDictFor(nerr_site_id):
         df_subset = df[df['Station_Code'].str.endswith(station_type)]
 
         for i,row in df_subset.iterrows():
+            row['params_reported'] = row['params_reported'].split(',')
             print("    ", row.to_json(), ',')
 
         print("]")
