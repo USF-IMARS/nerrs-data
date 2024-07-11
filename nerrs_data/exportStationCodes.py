@@ -55,8 +55,16 @@ def exportStationCodesDictFor(nerr_site_id):
 
     # === build the dict for the selection
     for station_type in ['nut', 'met', 'wq']:
+        print(f"\n# list of stations for {station_type}")
+        print("stations = [")
+        
         df_subset = df[df['Station_Code'].str.endswith(station_type)]
-        params_dict = {
-            row['Station_Code']: row['params_reported'].split(',') for index, row in df_subset.iterrows()
-        }
-        print('\n', station_type, ' = ', params_dict)
+
+        for i,row in df_subset.iterrows():
+            print("    ", row.to_json(), ',')
+
+        print("]")
+        #params_dict = {
+        #    row['Station_Code']: row['params_reported'].split(',') for index, row in df_subset.iterrows()
+        #}
+        #print('\n', station_type, ' = ', params_dict)
