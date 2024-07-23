@@ -16,12 +16,13 @@ from suds.client import Client
 import xml.etree.ElementTree as ET
 
 def exportAllParamsDateRange(stationCode, minDate, maxDate, paramTested):
+    print('init SOAP client...')
     soapClient = Client(
         "http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl",
         timeout=90,
         retxml=True
     )
-
+    print('submitting request...')
     # Get the station codes SOAP request example.
     data_xml = soapClient.service.exportAllParamsDateRangeXMLNew(
         stationCode,  # Station_Code
@@ -29,6 +30,7 @@ def exportAllParamsDateRange(stationCode, minDate, maxDate, paramTested):
         maxDate,
         paramTested
     )
+    print('parsing xml...')
     data_tree = ET.fromstring(data_xml)
     #print(
     #    "data:\n",
@@ -53,6 +55,7 @@ def exportAllParamsDateRange(stationCode, minDate, maxDate, paramTested):
             record[elem.tag] = elem.text
         records.append(record)
 
+    print('exporting as dataframe...')
     # Convert to DataFrame
     df = pd.DataFrame(records)
 
