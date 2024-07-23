@@ -56,4 +56,4 @@ def exportAllParamsDateRange(stationCode, minDate, maxDate, paramTested):
     # Convert to DataFrame
     df = pd.DataFrame(records)
 
-    print(df)
+    return(df)
