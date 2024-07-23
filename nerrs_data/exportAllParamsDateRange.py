@@ -15,7 +15,7 @@ import pandas as pd
 from suds.client import Client
 import xml.etree.ElementTree as ET
 
-def exportAllParamsDateRange(stationCode, minDate, maxDate, paramTested):
+def exportAllParamsDateRange(stationCode, minDate, maxDate, paramTested=None):
     print('init SOAP client...')
     soapClient = Client(
         "http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl",
