@@ -2,7 +2,7 @@
 
 __author__ = """Tylar Murray"""
 __email__ = 'email@tylar.info'
-__version__ = '1.2.3'
+__version__ = '1.3.0'
 
 from .exportSingleParam import exportSingleParam
 from .exportStationCodes import exportStationCodes
