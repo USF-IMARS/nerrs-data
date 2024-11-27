@@ -61,12 +61,16 @@ def exportAllParamsDateRange(stationCode, minDate, maxDate, paramTested=None, qc
 
     if(qcFilter):
         print('filtering out qc <= 1 (suspect)...')
+
+        # Initialize a counter for dropped rows
+        dropped_rows = 0
+
         # Loop through the columns to find pairs
         for col in df.columns:
             if col.startswith('F_'):
                 # ensure flag vals are int & set empty flags to '4' (see key below)
                 df[col] = df[col].fillna(4).astype(int)
-                # Get the base column name by removing '_qc'
+                # Get the base column name by removing 'F_'
                 base_col = col[2:] 
                 if base_col in df.columns:
                     # Set the corresponding base column value to NaN using qc vals
@@ -83,13 +87,22 @@ def exportAllParamsDateRange(stationCode, minDate, maxDate, paramTested=None, qc
                     #            for changes in barometric pressure
                     # %  4       Historical Data:  Pre-Auto QAQC
                     # %  5       Corrected Data
+
                     # throw out -5 through -2
-                    df.loc[df[col] <= -2, base_col] = np.nan    
                     # throw out 1
+
+                    # Count the number of rows to be dropped
+                    affected_rows = df[(df[col] <= -2) | (df[col] == 1)].shape[0]
+                    dropped_rows += affected_rows
+
+                    # drop the rows
+                    df.loc[df[col] <= -2, base_col] = np.nan    
                     df.loc[df[col] == 1, base_col] = np.nan
                     
         # Remove all columns that end with '_qc'
         df_cleaned = df.drop([col for col in df.columns if col.endswith('_qc')], axis=1)
+        
+        print(f'Total rows dropped due to QC issues: {dropped_rows}')
     else:
         print('skipping qc filter...')
     return(df)
